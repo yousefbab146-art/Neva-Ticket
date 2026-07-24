@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neva Ticket | Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <i data-lucide="ticket" class="brand-icon" style="color: #5865F2;"></i>
+                    <h2>Neva Ticket</h2>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <p class="nav-label">GENEL</p>
+                <button class="nav-btn active" data-target="overview">
+                    <i data-lucide="layout-dashboard"></i> Genel Bakış
+                </button>
+                
+                <p class="nav-label">BİLET YÖNETİMİ</p>
+                <button class="nav-btn" data-target="tickets">
+                    <i data-lucide="inbox"></i> Canlı Biletler
+                </button>
+                <button class="nav-btn" data-target="ratings">
+                    <i data-lucide="star"></i> Yetkili Puanları
+                </button>
+                
+                <p class="nav-label">AYARLAR</p>
+                <button class="nav-btn" data-target="settings">
+                    <i data-lucide="settings"></i> Bilet Ayarları
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar-placeholder"><i data-lucide="user"></i></div>
+                    <div class="user-info">
+                        <span class="user-name">Destek Yöneticisi</span>
+                        <span class="user-role">Neva System</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-search">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Biletlerde veya kullanıcı ID'lerinde ara...">
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="app.refreshData()"><i data-lucide="refresh-cw"></i></button>
+                    <div class="guild-selector">
+                        <span id="currentGuildName">Yükleniyor...</span>
+                        <i data-lucide="chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                
+                <!-- Overview Page -->
+                <section id="overview" class="page active animate-fade-in">
+                    <div class="page-header">
+                        <h1>Bilet Sistem Durumu</h1>
+                        <p>Müşteri destek talepleri ve yetkili performans özetiniz.</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper" style="color: #3b82f6"><i data-lucide="inbox"></i></div>
+                            <div class="stat-info">
+                                <h3>Aktif Biletler</h3>
+                                <p id="stat-open-tickets" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper" style="color: #10b981"><i data-lucide="check-circle-2"></i></div>
+                            <div class="stat-info">
+                                <h3>Toplam Çözülen</h3>
+                                <p id="stat-total-tickets" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper" style="color: #f59e0b"><i data-lucide="star"></i></div>
+                            <div class="stat-info">
+                                <h3>Ortalama Memnuniyet</h3>
+                                <p id="stat-avg-rating" class="stat-value">5.0 ⭐</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="panel bot-info-panel">
+                            <div class="panel-header">
+                                <h2><i data-lucide="cpu"></i> Sistem Bilgisi</h2>
+                            </div>
+                            <div class="panel-content">
+                                <div class="info-row">
+                                    <span>Bot Durumu</span>
+                                    <span class="status-badge success">Aktif</span>
+                                </div>
+                                <div class="info-row">
+                                    <span>Gecikme (Ping)</span>
+                                    <span id="bot-ping">0ms</span>
+                                </div>
+                                <div class="info-row">
+                                    <span>Çalışma Süresi</span>
+                                    <span id="bot-uptime">Bilinmiyor</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel quick-actions-panel">
+                            <div class="panel-header">
+                                <h2><i data-lucide="zap"></i> Hızlı İşlemler</h2>
+                            </div>
+                            <div class="panel-content quick-actions">
+                                <button class="action-btn primary" onclick="app.refreshData()"><i data-lucide="refresh-cw"></i> Verileri Yenile</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Active Tickets Page -->
+                <section id="tickets" class="page">
+                    <div class="page-header">
+                        <h1>Canlı Biletler</h1>
+                        <p>Sunucudaki aktif ve geçmiş bilet kayıtları.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Durum</th>
+                                        <th>Kullanıcı</th>
+                                        <th>Kategori</th>
+                                        <th>Üstlenen Yetkili</th>
+                                        <th>Değerlendirme</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tickets-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Staff Rating Leaderboard Page -->
+                <section id="ratings" class="page">
+                    <div class="page-header">
+                        <h1>Yetkili Puanları (Staff Rating)</h1>
+                        <p>Kullanıcıların bilet kapatıldıktan sonra yetkililere verdiği memnuniyet puanları.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sıra</th>
+                                        <th>Yetkili ID</th>
+                                        <th>Toplam Değerlendirme</th>
+                                        <th>Ortalama Puan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ratings-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Page -->
+                <section id="settings" class="page">
+                    <div class="page-header">
+                        <h1>Bilet Ayarları</h1>
+                        <p>Kategori, destek rolü ve log kanalı yapılandırması.</p>
+                    </div>
+                    <div class="panel full-width">
+                        <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Biletlerin Açılacağı Kategori</label>
+                                <select id="set-category" class="sleek-input category-select"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Destek Ekibi Rolü</label>
+                                <select id="set-role" class="sleek-input role-select"></select>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>HTML Transcript Log Kanalı</label>
+                                <select id="set-log" class="sleek-input channel-select"></select>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Bilet Paneli Başlığı</label>
+                                <input type="text" id="set-title" class="sleek-input" placeholder="🎟️ Neva Destek Talebi Oluştur">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Bilet Paneli Açıklaması</label>
+                                <textarea id="set-desc" class="sleek-input" rows="3"></textarea>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Bilet Paneli Banner Görsel URL (PNG / GIF / JPG)</label>
+                                <input type="text" id="set-banner" class="sleek-input" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="save-btn" onclick="app.saveSettings()"><i data-lucide="save"></i> Ayarları Kaydet</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
